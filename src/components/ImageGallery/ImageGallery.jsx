@@ -1,12 +1,12 @@
-import css from './ImageGallery.module.css'
+// import css from './ImageGallery.module.css'
 
-export default function ImageGallery({}) {
+// export default function ImageGallery({}) {
   
-  return (
-    <>
+//   return (
+//     <>
         
-    </>
+//     </>
         
 
-  )
-};
+//   )
+// };
