@@ -1,12 +1,23 @@
-// import css from './ImageGallery.module.css'
+import { Component } from 'react'
+import css from './ImageGallery.module.css'
 
-// export default function ImageGallery({}) {
-  
-//   return (
-//     <>
-        
-//     </>
-        
+import ImageGalleryItem from "components/ImageGalleryItem/ImageGalleryItem"
 
-//   )
-// };
+
+class ImageGallery extends Component { 
+
+    render() {
+       
+        return (
+            <>
+                <ul className={css.gallery}>
+                    <ImageGalleryItem imgs={this.props.imgs } />
+                
+                </ul>
+               
+            </>
+        )
+    }
+}
+
+export default ImageGallery
