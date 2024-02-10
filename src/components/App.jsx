@@ -3,6 +3,7 @@ import { Component } from 'react'
 import Searchbar from 'components/Searchbar/Searchbar'
 import fetchImgWithQuery from 'components/services/api'
 import ImageGallery from './ImageGallery/ImageGallery'
+import Button from './Button/Button'
 // import Contacts from 'components/ImageGalleryItem/ImageGalleryItem'
 // import Filter from './ImageGallery/ImageGallery'
 // import css from './App.module.css'
@@ -13,6 +14,8 @@ class App extends Component {
   state = {
     value: '',
     imgs: null,
+    searchQuery: null,
+    page: 1,
   }
 
   componentDidMount() {
@@ -34,12 +37,28 @@ class App extends Component {
   handleSubmit = async (evt) => {
 
     evt.preventDefault()
-    const searchQuery = this.state.value;
+
+    this.setState({ searchQuery: this.state.value })
+    // const searchQuery = this.state.value;
     // console.log(this.state.value);
-    const response = await fetchImgWithQuery(searchQuery)
-    console.log(response.data.hits);
+
+    this.setState({ page: 1 })
+
+    const response = await fetchImgWithQuery(this.state.value, this.state.page)
+    // console.log(response.data.hits);
     this.setState({ imgs: response.data.hits })
+    this.setState(prevState => { console.log(this.state.page); return { page: prevState.page + 1 } })
     this.setState({ value: '' })
+  }
+  
+  handleLoadMore = async () => {
+   
+    
+    const response = await fetchImgWithQuery(this.state.searchQuery, this.state.page)
+    
+    this.setState({ imgs: [...this.state.imgs,  ...response.data.hits ] })
+    this.setState(prevState => { return { page: prevState.page + 1 } })
+    
    }
 
 
@@ -50,6 +69,7 @@ class App extends Component {
       <>
         <Searchbar value={this.state.value} handleChange={this.handleChange} handleSubmit={this.handleSubmit} />
         {this.state.imgs && <ImageGallery imgs={this.state.imgs} />}
+        {this.state.imgs && <Button handleLoadMore={ this.handleLoadMore } />}
       </>
 
     )
