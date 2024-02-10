@@ -15,7 +15,7 @@ class App extends Component {
     value: '',
     imgs: null,
     searchQuery: null,
-    page: 1,
+    page: 0,
   }
 
   componentDidMount() {
@@ -44,7 +44,7 @@ class App extends Component {
 
     this.setState({ page: 1 })
 
-    const response = await fetchImgWithQuery(this.state.value, this.state.page)
+    const response = await fetchImgWithQuery(this.state.value, 1)
     // console.log(response.data.hits);
     this.setState({ imgs: response.data.hits })
     this.setState(prevState => { console.log(this.state.page); return { page: prevState.page + 1 } })
