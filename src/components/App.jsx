@@ -6,7 +6,7 @@ import fetchImgWithQuery from 'components/services/api'
 import ImageGallery from './ImageGallery/ImageGallery'
 import Button from './Button/Button'
 import Loader from './Loader/Loader'
-import Modal from './Modal/Modal'
+
 // import Contacts from 'components/ImageGalleryItem/ImageGalleryItem'
 // import Filter from './ImageGallery/ImageGallery'
 // import css from './App.module.css'
@@ -19,9 +19,10 @@ class App extends Component {
     imgs: null,
     searchQuery: null,
     page: 0,
-    isVisible: false,
+    isVisibleLoader: false,
     isShowModal: false,
     largeImageURL: null,
+    isVisibleButtonLoad: false,
 
   }
 
@@ -44,26 +45,34 @@ class App extends Component {
   handleSubmit = async (evt) => {
 
     evt.preventDefault()
+    if (this.state.value === '') { return}
 
-    this.setState({ imgs: null, searchQuery: this.state.value, isVisible: true })
+    this.setState({ imgs: null, searchQuery: this.state.value, isVisibleLoader: true })
     // const searchQuery = this.state.value;
     // console.log(this.state.value);
 
     this.setState({ page: 1 })
+  
 
     const response = await fetchImgWithQuery(this.state.value, 1)
-    console.log(response.data.hits);
-    this.setState({ isVisible: false, imgs: response.data.hits })
+    this.setState({isVisibleButtonLoad: true})
+    if (response.data.hits.length === 0) {
+      this.setState({ isVisibleButtonLoad: false })
+      alert('This image was not found! Enter a new name for the image.')
+
+    }
+  
+    this.setState({ isVisibleLoader: false, imgs: response.data.hits })
     this.setState(prevState => { return { page: prevState.page + 1 } })
     this.setState({ value: '' })
   }
   
   handleLoadMore = async () => {
-    this.setState({ isVisible: true })
+    this.setState({ isVisibleLoader: true })
     
     const response = await fetchImgWithQuery(this.state.searchQuery, this.state.page)
     
-    this.setState({ isVisible: false})
+    this.setState({ isVisibleLoader: false})
     this.setState({ imgs: [...this.state.imgs, ...response.data.hits] })
     this.setState(prevState => { return { page: prevState.page + 1 } })
     
@@ -71,21 +80,7 @@ class App extends Component {
     
   }
   
-  showModal = () => {
-    this.setState({isShowModal: true})
-  }
-
-  closeModal = () => {
-    this.setState({isShowModal: false})
-  }
-
-  onClick = (url) => {
-    this.setState({ largeImageURL: url })
-    console.log(this.state.largeImageURL);
-    
-  }
-
-
+  
   render() {
 
       
@@ -93,10 +88,10 @@ class App extends Component {
       <>
         <Searchbar value={this.state.value} handleChange={this.handleChange} handleSubmit={this.handleSubmit} />
         
-        {this.state.imgs && <ImageGallery onClick={this.onClick} imgs={this.state.imgs} showModal={this.showModal} closeModal={this.closeModal} />}
-        {this.state.isVisible &&  <Loader/>}
-        {this.state.imgs && <Button handleLoadMore={this.handleLoadMore} />}
-        {this.state.isShowModal && <Modal largeImageURL={this.largeImageURL} />}
+        {this.state.imgs && <ImageGallery imgs={this.state.imgs} />}
+        {this.state.isVisibleLoader &&  <Loader/>}
+        {this.state.isVisibleButtonLoad && <Button handleLoadMore={this.handleLoadMore} />}
+        
         
       </>
 

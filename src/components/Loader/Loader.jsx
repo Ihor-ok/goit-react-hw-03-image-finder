@@ -7,7 +7,7 @@ export default function Loader() {
   return (
      <div className={css.container}>
           <RotatingLines
-          isVisible={true}
+          isVisibleLoader={true}
           height="96"
           width="96"
           color="grey"
