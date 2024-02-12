@@ -11,7 +11,7 @@ class ImageGallery extends Component {
         return (
             <>
                 <ul className={css.gallery}>
-                    <ImageGalleryItem imgs={this.props.imgs } />
+                    <ImageGalleryItem imgs={this.props.imgs} onClick={this.props.onClick } showModal={this.props.showModal} />
                 
                 </ul>
                
